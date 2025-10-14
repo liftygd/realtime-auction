@@ -38,10 +38,10 @@ public record AuctionItem
             throw ErrorExceptions.NullOrEmpty<AuctionItem>(nameof(itemDescription));
 
         if (itemName.Length > MAX_NAME_LENGTH)
-            throw ErrorExceptions.InvalidLength<AuctionItem>(nameof(itemName));
+            throw ErrorExceptions.StringTooLong<AuctionItem>(nameof(itemName), MAX_NAME_LENGTH);
 
         if (itemDescription.Length > MAX_DESCRIPTION_LENGTH)
-            throw ErrorExceptions.InvalidLength<AuctionItem>(nameof(itemDescription));
+            throw ErrorExceptions.StringTooLong<AuctionItem>(nameof(itemDescription), MAX_DESCRIPTION_LENGTH);
 
         if (amount <= 0)
             throw ErrorExceptions.ZeroOrNegative<AuctionItem>(nameof(amount));
