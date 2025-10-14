@@ -1,6 +1,6 @@
 ﻿using Auction.Domain.Abstractions;
-using Auction.Domain.Exceptions;
 using Auction.Domain.ValueObjects;
+using Auction.Exceptions.Exceptions;
 
 namespace Auction.Domain.Models;
 
@@ -22,13 +22,13 @@ public class User : Entity<UserId>
     public static User Create(string userName, string emailAddress)
     {
         if (string.IsNullOrEmpty(userName))
-            throw ErrorExceptions.NullOrEmpty<User>(userName);
+            throw ErrorExceptions.NullOrEmpty<User>(nameof(userName));
 
         if (userName.Length > MAX_USERNAME_LENGTH)
-            throw ErrorExceptions.InvalidLength<User>(userName);
+            throw ErrorExceptions.InvalidLength<User>(nameof(userName));
 
         if (string.IsNullOrEmpty(emailAddress))
-            throw ErrorExceptions.NullOrEmpty<User>(emailAddress);
+            throw ErrorExceptions.NullOrEmpty<User>(nameof(emailAddress));
 
         return new User(userName, emailAddress);
     }

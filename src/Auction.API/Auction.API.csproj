@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Auction.Domain\Auction.Domain.csproj" />
+      <ProjectReference Include="..\Auction.Exceptions\Auction.Exceptions.csproj" />
     </ItemGroup>
 
 </Project>
