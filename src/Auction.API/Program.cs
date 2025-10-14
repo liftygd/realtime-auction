@@ -14,9 +14,4 @@ var app = builder.Build();
 app.UseApiServices();
 app.UseCustomExceptionHandling();
 
-app.MapPost("/test", async (string itemName, string itemDescription, int amount, decimal price) =>
-{
-    var test = AuctionItem.Create(itemName, itemDescription, amount, price);
-});
-
 app.Run();
