@@ -4,10 +4,34 @@
     image: postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=AuctionDb
     volumes:
-      - postgres_catalogue:/var/lib/postgresql/data/
+      - postgres_auction:/var/lib/postgresql/data/
+  
+  auction.api:
+    image: auction.api
+    build:
+      context: .
+      dockerfile: RealtimeAuction.API/Dockerfile
+    container_name: auction.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=auction.db;Port=5432;Database=AuctionDb;Username=postgres;Password=postgres
+    depends_on:
+      - auction.db
+    ports:
+      - "6000:8080"
+      - "6060:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+volumes:
+  postgres_auction:
 
