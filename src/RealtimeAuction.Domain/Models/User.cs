@@ -15,6 +15,7 @@ public class User : Entity<UserId>
     public Birthday Birthday { get; private set; }
 
     public static User Create(
+        UserId userId,
         string userName, 
         string emailAddress,
         DateTime birthday)
@@ -33,6 +34,7 @@ public class User : Entity<UserId>
         
         var user = new User
         {
+            Id = userId,
             Username = userName,
             EmailAddress = emailAddress,
             Birthday = Birthday.Create(birthday.Year, birthday.Month, birthday.Day)

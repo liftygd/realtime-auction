@@ -27,7 +27,7 @@ public class Auction : Entity<AuctionId>
     public IReadOnlyCollection<AuctionBid> AuctionBids => _auctionBids;
     private readonly List<AuctionBid> _auctionBids = new();
 
-    public static Auction Create(UserId ownerId, Address address, AuctionItem auctionItem, decimal startingPrice, decimal maxPrice, decimal priceIncrement, int auctionTimeInSeconds)
+    public static Auction Create(AuctionId auctionId, UserId ownerId, Address address, AuctionItem auctionItem, decimal startingPrice, decimal maxPrice, decimal priceIncrement, int auctionTimeInSeconds)
     {
         if (auctionTimeInSeconds < MIN_AUCTION_TIME_SECONDS)
             throw ErrorExceptions.ValueOutsideBounds<Auction>(nameof(auctionTimeInSeconds), MIN_AUCTION_TIME_SECONDS, Int32.MaxValue);
@@ -46,6 +46,7 @@ public class Auction : Entity<AuctionId>
 
         var auction = new Auction
         {
+            Id = auctionId,
             OwnerId = ownerId,
             Address = address,
             Status = AuctionStatus.Draft,
@@ -81,7 +82,7 @@ public class Auction : Entity<AuctionId>
         MaxPrice = newMaxPrice;
     }
 
-    public void Add(UserId userId, DateTime bidDate, decimal price)
+    public AuctionBid Add(UserId userId, DateTime bidDate, decimal price)
     {
         var bid = AuctionBid.Create(Id, userId, bidDate, price);
         
@@ -99,6 +100,8 @@ public class Auction : Entity<AuctionId>
         HighestBid = bid.Id;
         HighestBidAmount = bid.Price;
         LatestBidDate = bidDate;
+
+        return bid;
     }
 
     public bool IsActive()

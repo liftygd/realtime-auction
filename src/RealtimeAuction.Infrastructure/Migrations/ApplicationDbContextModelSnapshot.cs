@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RealtimeAuction.Infrastructure;
+using RealtimeAuction.Infrastructure.Context;
 
 #nullable disable
 

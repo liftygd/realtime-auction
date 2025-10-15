@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RealtimeAuction.Application.Repositories;
+using RealtimeAuction.Infrastructure.Context;
 using RealtimeAuction.Infrastructure.Repositories;
 
 namespace RealtimeAuction.Infrastructure;

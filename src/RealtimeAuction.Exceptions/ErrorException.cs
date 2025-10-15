@@ -3,18 +3,18 @@
 public class ErrorException : Exception 
 {
     public string ErrCode { get; }
-    public string Message { get; }
+    public string ErrMessage { get; }
     public string Caller { get; }
 
-    public ErrorException(string errCode, string message, string caller) : base($"{errCode} || {message} || {caller}")
+    public ErrorException(string errCode, string errMessage, string caller) : base($"{errCode} || {errMessage} || {caller}")
     {
         ErrCode = errCode;
-        Message = message;
+        ErrMessage = errMessage;
         Caller = caller;
     }
 }
 
 public class ErrorExceptionWithCaller<TCaller> : ErrorException
 {
-    public ErrorExceptionWithCaller(string errCode, string message) : base(errCode, message, typeof(TCaller).Name) { }
+    public ErrorExceptionWithCaller(string errCode, string errMessage) : base(errCode, errMessage, typeof(TCaller).Name) { }
 }

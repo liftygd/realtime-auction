@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using RealtimeAuction.Domain.Models;
 
-namespace RealtimeAuction.Infrastructure;
+namespace RealtimeAuction.Infrastructure.Context;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {

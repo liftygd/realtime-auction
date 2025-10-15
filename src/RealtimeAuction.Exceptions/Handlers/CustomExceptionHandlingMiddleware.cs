@@ -27,7 +27,7 @@ public class CustomExceptionHandlingMiddleware(
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
         var errCode = err.ErrCode;
-        var message = err.Message;
+        var message = err.ErrMessage;
         var caller = err.Caller;
 
         var errorResponse = new ErrorResponse(errCode, caller, message);

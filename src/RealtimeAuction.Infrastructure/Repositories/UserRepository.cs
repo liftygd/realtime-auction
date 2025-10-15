@@ -1,11 +1,13 @@
-﻿using RealtimeAuction.Application.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using RealtimeAuction.Application.Repositories;
 using RealtimeAuction.Domain.Models;
 using RealtimeAuction.Domain.ValueObjects;
 using RealtimeAuction.Exceptions.Exceptions;
+using RealtimeAuction.Infrastructure.Context;
 
 namespace RealtimeAuction.Infrastructure.Repositories;
 
-public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
+public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
 {
     public async Task<Guid> CreateUser(User newUser, CancellationToken cancellationToken = default)
     {
@@ -43,7 +45,10 @@ public class UserRepository(ApplicationDbContext dbContext) : IUserRepository
     private async Task<User> FindUser(Guid userId, CancellationToken cancellationToken = default)
     {
         var id = UserId.Create(userId);
-        var user = await dbContext.Users.FindAsync([id], cancellationToken);
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        
         if (user == null)
             throw DatabaseExceptions.EntryNonExistent<User>(nameof(id), userId.ToString());
         

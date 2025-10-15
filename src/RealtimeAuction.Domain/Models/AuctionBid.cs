@@ -18,6 +18,7 @@ public class AuctionBid : Entity<BidId>
 
         var bid = new AuctionBid
         {
+            Id = BidId.Create(Guid.NewGuid()),
             AuctionId = auctionId,
             UserId = userId,
             BiddingDate = bidDate,
