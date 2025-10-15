@@ -1,5 +1,4 @@
 using Auction.API;
-using RealtimeAuction.Domain.ValueObjects;
 using RealtimeAuction.Exceptions;
 using RealtimeAuction.Infrastructure;
 using RealtimeAuction.Infrastructure.Extensions;

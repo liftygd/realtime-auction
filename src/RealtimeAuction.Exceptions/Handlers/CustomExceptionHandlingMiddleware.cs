@@ -26,13 +26,9 @@ public class CustomExceptionHandlingMiddleware(
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
-        var error = err.Message.Split(" || ");
-        if (error.Length < 3)
-            return Task.CompletedTask;
-
-        var errCode = error[0];
-        var message = error[1];
-        var caller = error[2];
+        var errCode = err.ErrCode;
+        var message = err.Message;
+        var caller = err.Caller;
 
         var errorResponse = new ErrorResponse(errCode, caller, message);
         logger.LogError($"Handled error exception with code '{errCode}' from '{caller}' with message: '{message}'");

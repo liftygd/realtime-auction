@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeAuction.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeAuction.Application", "RealtimeAuction.Application\RealtimeAuction.Application.csproj", "{01F1C1BE-129D-463D-A8E3-AE72FE1FE16F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeAuction.UnitTests", "RealtimeAuction.UnitTests\RealtimeAuction.UnitTests.csproj", "{B8F04A0F-6E25-4CB1-ACE4-C82D2DCB1401}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{01F1C1BE-129D-463D-A8E3-AE72FE1FE16F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01F1C1BE-129D-463D-A8E3-AE72FE1FE16F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01F1C1BE-129D-463D-A8E3-AE72FE1FE16F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8F04A0F-6E25-4CB1-ACE4-C82D2DCB1401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8F04A0F-6E25-4CB1-ACE4-C82D2DCB1401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8F04A0F-6E25-4CB1-ACE4-C82D2DCB1401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8F04A0F-6E25-4CB1-ACE4-C82D2DCB1401}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
