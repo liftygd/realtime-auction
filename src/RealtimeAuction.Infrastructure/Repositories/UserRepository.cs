@@ -8,7 +8,7 @@ using RealtimeAuction.Infrastructure.Context;
 
 namespace RealtimeAuction.Infrastructure.Repositories;
 
-public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
+public class UserRepository(IApplicationDbContext dbContext) : IWriteUserRepository, IReadUserRepository
 {
     public async Task<Guid> CreateUser(User newUser, CancellationToken cancellationToken = default)
     {

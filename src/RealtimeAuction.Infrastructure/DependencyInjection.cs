@@ -11,14 +11,19 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IAuctionRepository, AuctionRepository>();
+        services.AddScoped<IWriteUserRepository, UserRepository>();
+        services.AddScoped<IReadUserRepository, UserRepository>();
+        
+        services.AddScoped<IWriteAuctionRepository, AuctionRepository>();
+        services.AddScoped<IReadAuctionRepository, AuctionRepository>();
         
         var connectionString = configuration.GetConnectionString("Database");
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
         });
+        
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         
         return services;
     }

@@ -12,7 +12,8 @@ namespace RealtimeAuction.Infrastructure.Repositories;
 
 public class AuctionRepository(
     IHubContext<AuctionHub, IAuctionClient> hubContext,
-    IApplicationDbContext dbContext) : IAuctionRepository
+    IApplicationDbContext dbContext) 
+    : IWriteAuctionRepository, IReadAuctionRepository
 {
     public async Task<Guid> CreateAuction(Auction newAuction, CancellationToken cancellationToken = default)
     {
