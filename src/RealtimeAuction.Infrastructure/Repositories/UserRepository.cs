@@ -28,7 +28,7 @@ public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
         }
     }
 
-    public async Task<bool> UpdateUser(Guid userId, User newUser, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateUser(UserId userId, User newUser, CancellationToken cancellationToken = default)
     {
         var user = await FindUser(userId, cancellationToken);
         
@@ -50,7 +50,7 @@ public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
         }
     }
 
-    public async Task<User> GetUserById(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<User> GetUserById(UserId userId, CancellationToken cancellationToken = default)
     {
         var user = await FindUser(userId, cancellationToken);
         return user;
@@ -58,10 +58,12 @@ public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
 
     public async Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
     {
-        return dbContext.Users.ToList();
+        return await dbContext.Users
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> DeleteUser(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteUser(UserId userId, CancellationToken cancellationToken = default)
     {
         var user = await FindUser(userId, cancellationToken);
         
@@ -70,15 +72,14 @@ public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
         return true;
     }
 
-    private async Task<User> FindUser(Guid userId, CancellationToken cancellationToken = default)
+    private async Task<User> FindUser(UserId userId, CancellationToken cancellationToken = default)
     {
-        var id = UserId.Create(userId);
         var user = await dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         
         if (user == null)
-            throw DatabaseExceptions.EntryNonExistent<User>(nameof(id), userId.ToString());
+            throw DatabaseExceptions.EntryNonExistent<User>(nameof(userId), userId.ToString());
         
         return user;
     }

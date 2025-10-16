@@ -82,10 +82,10 @@ public class UserRepositoryTests
     public async Task UpdateUser_WhenExists_UpdatesUserValues()
     {
         //Arrange
-        var userId = Guid.NewGuid();
+        var userId = UserId.Create(Guid.NewGuid());
         var data = new List<User>
         {
-            User.Create(UserId.Create(userId), "123", "1@mail.test", DateTime.UtcNow),
+            User.Create(userId, "123", "1@mail.test", DateTime.UtcNow),
             User.Create(UserId.Create(Guid.NewGuid()), "123456", "2@mail.test", DateTime.UtcNow)
         };
 
@@ -95,7 +95,7 @@ public class UserRepositoryTests
         var mockContext = new Mock<IApplicationDbContext>();
         mockContext.Setup(x => x.Users).Returns(mockSet.Object);
 
-        var newUser = User.Create(UserId.Create(userId), "newUser", "3@mail.test", DateTime.UtcNow);
+        var newUser = User.Create(userId, "newUser", "3@mail.test", DateTime.UtcNow);
         
         //Act
         var userRepository = new UserRepository(mockContext.Object);
@@ -120,7 +120,7 @@ public class UserRepositoryTests
         var userRepository = new UserRepository(mockContext.Object);
 
         //Act
-        Func<Task> act = () => userRepository.GetUserById(Guid.NewGuid());
+        Func<Task> act = () => userRepository.GetUserById(UserId.Create(Guid.NewGuid()));
 
         //Assert
         var exception = await Assert.ThrowsAnyAsync<ErrorException>(act);
@@ -140,7 +140,7 @@ public class UserRepositoryTests
         var userRepository = new UserRepository(mockContext.Object);
 
         //Act
-        Func<Task> act = () => userRepository.UpdateUser(Guid.NewGuid(), null!);
+        Func<Task> act = () => userRepository.UpdateUser(UserId.Create(Guid.NewGuid()), null!);
 
         //Assert
         var exception = await Assert.ThrowsAnyAsync<ErrorException>(act);
@@ -153,10 +153,10 @@ public class UserRepositoryTests
     public async Task DeleteUser_WhenExists_DeletesAndReturnsTrue()
     {
         //Arrange
-        var userId = Guid.NewGuid();
+        var userId = UserId.Create(Guid.NewGuid());
         var data = new List<User>
         {
-            User.Create(UserId.Create(userId), "123", "1@mail.test", DateTime.UtcNow),
+            User.Create(userId, "123", "1@mail.test", DateTime.UtcNow),
             User.Create(UserId.Create(Guid.NewGuid()), "123456", "2@mail.test", DateTime.UtcNow)
         };
 
@@ -187,7 +187,7 @@ public class UserRepositoryTests
         var userRepository = new UserRepository(mockContext.Object);
 
         //Act
-        Func<Task> act = () => userRepository.DeleteUser(Guid.NewGuid());
+        Func<Task> act = () => userRepository.DeleteUser(UserId.Create(Guid.NewGuid()));
 
         //Assert
         var exception = await Assert.ThrowsAnyAsync<ErrorException>(act);
