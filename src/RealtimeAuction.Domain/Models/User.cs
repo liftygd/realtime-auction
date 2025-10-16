@@ -14,11 +14,7 @@ public class User : Entity<UserId>
     public string EmailAddress { get; private set; }
     public Birthday Birthday { get; private set; }
 
-    public static User Create(
-        UserId userId,
-        string userName, 
-        string emailAddress,
-        DateTime birthday)
+    private static void Validate(string userName, string emailAddress, DateTime birthday)
     {
         if (string.IsNullOrEmpty(userName))
             throw ErrorExceptions.NullOrEmpty<User>(nameof(userName));
@@ -31,6 +27,15 @@ public class User : Entity<UserId>
         
         if (!Regex.IsMatch(emailAddress, EMAIL_FORMAT, RegexOptions.IgnoreCase))
             throw ErrorExceptions.InvalidFormat<User>(nameof(emailAddress));
+    }
+    
+    public static User Create(
+        UserId userId,
+        string userName, 
+        string emailAddress,
+        DateTime birthday)
+    {
+        Validate(userName, emailAddress, birthday);
         
         var user = new User
         {
@@ -41,5 +46,14 @@ public class User : Entity<UserId>
         };
         
         return user;
+    }
+
+    public void Update(string userName, string emailAddress, DateTime birthday)
+    {
+        Validate(userName, emailAddress, birthday);
+        
+        Username = userName;
+        EmailAddress = emailAddress;
+        Birthday = Birthday.Create(birthday.Year, birthday.Month, birthday.Day);
     }
 }

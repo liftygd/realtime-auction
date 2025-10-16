@@ -22,6 +22,12 @@ public record Birthday
         Day = day;
     }
 
+    public DateTime ToDateTime()
+    {
+        var date = new DateTime(Year, Month, Day);
+        return date;
+    }
+
     public static Birthday Create(int year, int month, int day)
     {
         if (year < 0)

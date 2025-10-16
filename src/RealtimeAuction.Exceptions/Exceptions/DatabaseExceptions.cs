@@ -2,7 +2,7 @@
 
 public class DatabaseExceptions
 {
-    public static ErrorException DatabaseValueNotUnique<TCaller>(string property)
+    public static ErrorException EntryValueNotUnique<TCaller>(string property)
     {
         return new ErrorExceptionWithCaller<TCaller>(
             "ERR_DB_VALUE_NOT_UNIQUE", 

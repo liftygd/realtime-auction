@@ -27,7 +27,7 @@ public class Auction : Entity<AuctionId>
     public IReadOnlyCollection<AuctionBid> AuctionBids => _auctionBids;
     private readonly List<AuctionBid> _auctionBids = new();
 
-    public static Auction Create(AuctionId auctionId, UserId ownerId, Address address, AuctionItem auctionItem, decimal startingPrice, decimal maxPrice, decimal priceIncrement, int auctionTimeInSeconds)
+    private static void Validate(decimal startingPrice, decimal maxPrice, decimal priceIncrement, int auctionTimeInSeconds)
     {
         if (auctionTimeInSeconds < MIN_AUCTION_TIME_SECONDS)
             throw ErrorExceptions.ValueOutsideBounds<Auction>(nameof(auctionTimeInSeconds), MIN_AUCTION_TIME_SECONDS, Int32.MaxValue);
@@ -43,7 +43,20 @@ public class Auction : Entity<AuctionId>
         
         if (maxPrice - startingPrice < priceIncrement)
             throw ErrorExceptions.ValueOutsideBounds<Auction>(nameof(maxPrice), (int)(startingPrice + priceIncrement), Int32.MaxValue);
+    }
 
+    public static Auction Create(
+        AuctionId auctionId, 
+        UserId ownerId,
+        Address address,
+        AuctionItem auctionItem, 
+        decimal startingPrice, 
+        decimal maxPrice, 
+        decimal priceIncrement, 
+        int auctionTimeInSeconds)
+    {
+        Validate(startingPrice, maxPrice, priceIncrement, auctionTimeInSeconds);
+        
         var auction = new Auction
         {
             Id = auctionId,
@@ -64,11 +77,20 @@ public class Auction : Entity<AuctionId>
         return auction;
     }
 
-    public void Update(Address newAddress, AuctionStatus newStatus, AuctionItem newAuctionItem, int newAuctionTime, decimal newMaxPrice)
+    public void Update(
+        Address newAddress, 
+        AuctionStatus newStatus, 
+        AuctionItem newAuctionItem,
+        decimal newStartingPrice,
+        decimal newMaxPrice,
+        decimal newPriceIncrement,
+        int newAuctionTimeInSeconds)
     {
         if (Status != AuctionStatus.Draft)
             throw AuctionExceptions.AuctionAlreadyActive<Auction>(Id.Value.ToString());
 
+        Validate(newStartingPrice, newMaxPrice, newPriceIncrement, newAuctionTimeInSeconds);
+        
         if (Status == AuctionStatus.Draft && newStatus == AuctionStatus.Active)
         {
             StartDate = DateTime.UtcNow;
@@ -78,8 +100,10 @@ public class Auction : Entity<AuctionId>
         Address = newAddress;
         Status = newStatus;
         AuctionItem = newAuctionItem;
-        AuctionTimeInSeconds = newAuctionTime;
+        StartingPrice = newStartingPrice;
         MaxPrice = newMaxPrice;
+        PriceIncrement = newPriceIncrement;
+        AuctionTimeInSeconds = newAuctionTimeInSeconds;
     }
 
     public AuctionBid Add(UserId userId, DateTime bidDate, decimal price)

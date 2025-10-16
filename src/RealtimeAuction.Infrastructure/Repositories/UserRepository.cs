@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using RealtimeAuction.Application.Repositories;
 using RealtimeAuction.Domain.Models;
 using RealtimeAuction.Domain.ValueObjects;
@@ -11,21 +12,48 @@ public class UserRepository(IApplicationDbContext dbContext) : IUserRepository
 {
     public async Task<Guid> CreateUser(User newUser, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            dbContext.Users.Add(newUser);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            
+            return newUser.Id.Value;
+        }
+        catch (DbUpdateException ex)
+        {
+            if (ex.InnerException is PostgresException npgex && npgex.SqlState == PostgresErrorCodes.UniqueViolation)
+                throw DatabaseExceptions.EntryValueNotUnique<User>($"{nameof(newUser.Username)} or {nameof(newUser.EmailAddress)}");
+
+            throw;
+        }
     }
 
     public async Task<bool> UpdateUser(Guid userId, User newUser, CancellationToken cancellationToken = default)
     {
         var user = await FindUser(userId, cancellationToken);
         
-        throw new NotImplementedException();
+        try
+        {
+            user.Update(newUser.Username, newUser.EmailAddress, newUser.Birthday.ToDateTime());
+            
+            dbContext.Users.Update(user);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            
+            return true;
+        }
+        catch (DbUpdateException ex)
+        {
+            if (ex.InnerException is PostgresException npgex && npgex.SqlState == PostgresErrorCodes.UniqueViolation)
+                throw DatabaseExceptions.EntryValueNotUnique<User>($"{nameof(newUser.Username)} or {nameof(newUser.EmailAddress)}");
+
+            throw;
+        }
     }
 
     public async Task<User> GetUserById(Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await FindUser(userId, cancellationToken);
-        
-        throw new NotImplementedException();
+        return user;
     }
 
     public async Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
