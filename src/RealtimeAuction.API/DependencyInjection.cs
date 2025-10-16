@@ -1,4 +1,4 @@
-﻿using Auction.API.Hubs;
+﻿using RealtimeAuction.Application.Hubs;
 
 namespace Auction.API;
 

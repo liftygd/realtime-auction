@@ -108,6 +108,9 @@ public class Auction : Entity<AuctionId>
 
     public AuctionBid Add(UserId userId, DateTime bidDate, decimal price)
     {
+        if (!IsActive())
+            throw AuctionExceptions.AuctionIsNotActive<Auction>(Id.Value.ToString());
+        
         var bid = AuctionBid.Create(Id, userId, bidDate, price);
         
         if (price < 0)

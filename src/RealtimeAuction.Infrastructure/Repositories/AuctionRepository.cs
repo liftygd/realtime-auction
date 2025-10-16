@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using RealtimeAuction.Application.Hubs;
 using RealtimeAuction.Application.Repositories;
+using RealtimeAuction.Domain.Enums;
 using RealtimeAuction.Domain.Models;
 using RealtimeAuction.Domain.ValueObjects;
 using RealtimeAuction.Exceptions.Exceptions;
@@ -7,7 +10,9 @@ using RealtimeAuction.Infrastructure.Context;
 
 namespace RealtimeAuction.Infrastructure.Repositories;
 
-public class AuctionRepository(IApplicationDbContext dbContext) : IAuctionRepository
+public class AuctionRepository(
+    IHubContext<AuctionHub, IAuctionClient> hubContext,
+    IApplicationDbContext dbContext) : IAuctionRepository
 {
     public async Task<Guid> CreateAuction(Auction newAuction, CancellationToken cancellationToken = default)
     {
@@ -22,6 +27,13 @@ public class AuctionRepository(IApplicationDbContext dbContext) : IAuctionReposi
         var auction = await FindAuction(auctionId, cancellationToken);
 
         auction.Add(newBid.UserId, newBid.BiddingDate, newBid.Price);
+        await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionBidAdded(newBid);
+        
+        if (newBid.Price >= auction.MaxPrice)
+        {
+            auction.Close();
+            await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionStatusUpdated(AuctionStatus.Ended);
+        }
             
         dbContext.Auctions.Update(auction);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -41,6 +53,9 @@ public class AuctionRepository(IApplicationDbContext dbContext) : IAuctionReposi
             newAuction.MaxPrice,
             newAuction.PriceIncrement,
             newAuction.AuctionTimeInSeconds);
+        
+        if (newAuction.Status == AuctionStatus.Active)
+            await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionStatusUpdated(AuctionStatus.Active);
             
         dbContext.Auctions.Update(auction);
         await dbContext.SaveChangesAsync(cancellationToken);

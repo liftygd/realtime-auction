@@ -1,12 +1,13 @@
-﻿using Auction.API.Dtos;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
+using RealtimeAuction.Domain.Enums;
+using RealtimeAuction.Domain.Models;
 
-namespace Auction.API.Hubs;
+namespace RealtimeAuction.Application.Hubs;
 
 public interface IAuctionClient
 {
-    Task AuctionBidAdded();
-    Task AuctionStatusUpdated();
+    Task AuctionBidAdded(AuctionBid auctionBid);
+    Task AuctionStatusUpdated(AuctionStatus status);
 }
 
 public class AuctionHub : Hub<IAuctionClient>

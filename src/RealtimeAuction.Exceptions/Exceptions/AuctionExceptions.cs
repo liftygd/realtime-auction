@@ -22,4 +22,11 @@ public static class AuctionExceptions
             "ERR_AUCTION_ALREADY_ACTIVE", 
             $"Auction '{auctionId}' cannot be updated since it is already active.");
     }
+    
+    public static ErrorException AuctionIsNotActive<TCaller>(string auctionId)
+    {
+        return new ErrorExceptionWithCaller<TCaller>(
+            "ERR_AUCTION_NOT_ACTIVE", 
+            $"Cannot add bid to auction '{auctionId}' because it is not active.");
+    }
 }
