@@ -2,7 +2,7 @@
 using RealtimeAuction.Application.Extensions;
 using RealtimeAuction.Application.Repositories;
 
-namespace RealtimeAuction.Application.Users.Queries.GetAllUsers;
+namespace RealtimeAuction.Application.Features.Users.Queries.GetAllUsers;
 
 public class GetAllUsersQueryHandler(IReadUserRepository readUserRepository) : IQueryHandler<GetAllUsersQuery, GetAllUsersResult>
 {

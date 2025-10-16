@@ -2,7 +2,7 @@
 using Mapster;
 using RealtimeAuction.Application.Abstractions;
 using RealtimeAuction.Application.Dtos;
-using RealtimeAuction.Application.Users.Queries.GetAllUsers;
+using RealtimeAuction.Application.Features.Users.Queries.GetAllUsers;
 
 namespace Auction.API.Endpoints.Users;
 
