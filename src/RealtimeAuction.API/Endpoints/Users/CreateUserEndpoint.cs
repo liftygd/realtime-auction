@@ -19,7 +19,7 @@ public class CreateUserEndpoint : IMinimalEndpoint
             var result = await mediator.Send<CreateUserCommand, CreateUserResult>(command);
             
             var response = result.Adapt<CreateUserResponse>();
-            return Results.Created($"users/{command.User.Username}", response);
+            return Results.Created($"users/{command.User.UserId}", response);
         });
     }
 }

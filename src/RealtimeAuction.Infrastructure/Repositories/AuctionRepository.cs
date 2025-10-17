@@ -35,7 +35,7 @@ public class AuctionRepository(
             auction.Close();
             await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionStatusUpdated(AuctionStatus.Ended);
         }
-            
+        
         dbContext.Auctions.Update(auction);
         await dbContext.SaveChangesAsync(cancellationToken);
             
@@ -93,7 +93,6 @@ public class AuctionRepository(
     {
         var auction = await dbContext.Auctions
             .Include(a => a.AuctionBids)
-            .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == auctionId, cancellationToken);
         
         if (auction == null)

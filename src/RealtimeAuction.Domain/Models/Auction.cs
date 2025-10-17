@@ -119,7 +119,7 @@ public class Auction : Entity<AuctionId>
         if (price < HighestBidAmount)
             throw AuctionExceptions.BidTooSmall<Auction>(bid.Id.Value.ToString(), HighestBidAmount);
         
-        if ((price - HighestBidAmount) % PriceIncrement != 0) 
+        if (price - HighestBidAmount == 0 || (price - HighestBidAmount) % PriceIncrement != 0) 
             throw AuctionExceptions.BidIsNotIncrementedCorrectly<Auction>(bid.Id.Value.ToString(), PriceIncrement);
         
         _auctionBids.Add(bid);

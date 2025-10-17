@@ -21,7 +21,7 @@ public record Address
         ZipCode = zipCode;
     }
 
-    public static Address Of(string addressLine, string country, string state, string zipCode)
+    public static Address Create(string addressLine, string country, string state, string zipCode)
     {
         if (string.IsNullOrWhiteSpace(addressLine))
             throw ErrorExceptions.NullOrEmpty<Address>(nameof(addressLine));

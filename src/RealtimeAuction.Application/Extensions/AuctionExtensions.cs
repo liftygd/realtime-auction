@@ -1,5 +1,6 @@
 ﻿using RealtimeAuction.Application.Dtos;
 using RealtimeAuction.Domain.Models;
+using RealtimeAuction.Domain.ValueObjects;
 
 namespace RealtimeAuction.Application.Extensions;
 
@@ -31,13 +32,14 @@ public static class AuctionExtensions
 
         var auctionBids = new List<AuctionBidDto>();
 
-        foreach (var item in auction.AuctionBids)
+        foreach (var bid in auction.AuctionBids)
         {
             var auctionBid = new AuctionBidDto(
-                item.Id.Value,
-                item.AuctionId.Value,
-                item.BiddingDate,
-                item.Price);
+                bid.Id.Value,
+                bid.AuctionId.Value,
+                bid.UserId.Value,
+                bid.BiddingDate,
+                bid.Price);
             
             auctionBids.Add(auctionBid);
         }
@@ -59,5 +61,55 @@ public static class AuctionExtensions
             auctionBids);
 
         return auctionDto;
+    }
+
+    public static Auction ToAuction(this AuctionDto auctionDto, Guid id)
+    {
+        var address = Address.Create(
+            auctionDto.Address.AddressLine,
+            auctionDto.Address.Country,
+            auctionDto.Address.State,
+            auctionDto.Address.ZipCode);
+
+        var auctionItem = AuctionItem.Create(
+            auctionDto.AuctionItem.ItemName,
+            auctionDto.AuctionItem.ItemDescription,
+            auctionDto.AuctionItem.Amount,
+            auctionDto.AuctionItem.Price);
+        
+        var auction = Auction.Create(
+            AuctionId.Create(id), 
+            UserId.Create(auctionDto.OwnerId), 
+            address,
+            auctionItem,
+            auctionDto.StartingPrice,
+            auctionDto.MaxPrice,
+            auctionDto.PriceIncrement,
+            auctionDto.AuctionTimeInSeconds);
+        
+        auction.Update(
+            address, 
+            auctionDto.Status, 
+            auctionItem, 
+            auctionDto.StartingPrice,
+            auctionDto.MaxPrice, 
+            auctionDto.PriceIncrement, 
+            auctionDto.AuctionTimeInSeconds);
+        
+        foreach (var bidDto in auctionDto.AuctionBids)
+        {
+            var bid = AuctionBid.Create(
+                AuctionId.Create(bidDto.AuctionId),
+                UserId.Create(bidDto.UserId), 
+                bidDto.BidDate,
+                bidDto.BidAmount);
+
+            auction.Add(
+                bid.UserId,
+                bidDto.BidDate,
+                bid.Price);
+        }
+        
+        return auction;
     }
 }

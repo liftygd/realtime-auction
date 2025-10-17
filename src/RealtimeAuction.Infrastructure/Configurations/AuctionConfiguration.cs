@@ -65,9 +65,9 @@ internal class AuctionConfiguration : IEntityTypeConfiguration<Auction>
             });
         
         //Highest bid
-        builder.HasOne<AuctionBid>()
-            .WithMany()
-            .HasForeignKey(a => a.HighestBid);
+        builder.Property(a => a.HighestBid).HasConversion(
+            bidId => bidId!.Value,
+            dbId => BidId.Create(dbId));
         
         //Pricing
         builder.Property(a => a.HighestBidAmount);
