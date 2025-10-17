@@ -6,6 +6,11 @@ namespace RealtimeAuction.Application.Extensions;
 
 public static class AuctionExtensions
 {
+    public static string GetAuctionConnection(Guid auctionId)
+    {
+        return $"auction-{auctionId}";
+    }
+    
     public static List<AuctionDto> ToAuctionDtoList(this List<Auction> auctions)
     {
         var list = new List<AuctionDto>();

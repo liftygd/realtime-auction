@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using RealtimeAuction.Application.Extensions;
 using RealtimeAuction.Application.Hubs;
 using RealtimeAuction.Application.Repositories;
 using RealtimeAuction.Domain.Enums;
@@ -28,12 +29,14 @@ public class AuctionRepository(
         var auction = await FindAuction(auctionId, cancellationToken);
 
         auction.Add(newBid.UserId, newBid.BiddingDate, newBid.Price);
-        await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionBidAdded(newBid);
+
+        var connectionString = AuctionExtensions.GetAuctionConnection(auctionId.Value);
+        await hubContext.Clients.Group(connectionString).AuctionBidAdded(newBid);
         
         if (newBid.Price >= auction.MaxPrice)
         {
             auction.Close();
-            await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionStatusUpdated(AuctionStatus.Ended);
+            await hubContext.Clients.Group(connectionString).AuctionStatusUpdated(nameof(AuctionStatus.Ended));
         }
         
         dbContext.Auctions.Update(auction);
@@ -56,7 +59,10 @@ public class AuctionRepository(
             newAuction.AuctionTimeInSeconds);
         
         if (newAuction.Status == AuctionStatus.Active)
-            await hubContext.Clients.Group(auctionId.Value.ToString()).AuctionStatusUpdated(AuctionStatus.Active);
+        {
+            var connectionString = AuctionExtensions.GetAuctionConnection(auctionId.Value);
+            await hubContext.Clients.Group(connectionString).AuctionStatusUpdated(nameof(AuctionStatus.Active));
+        }
             
         dbContext.Auctions.Update(auction);
         await dbContext.SaveChangesAsync(cancellationToken);
